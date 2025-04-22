@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ImageUploader } from "@/components/ImageUploader";
 import { ResultDisplay } from "@/components/ResultDisplay";
@@ -41,27 +40,37 @@ const Index = () => {
     setErrorDetails(null);
 
     try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
+      var formdata = new FormData();
+      formdata.append("file", selectedFile, selectedFile.name);
 
-      // Log that we're making the API call
+      var requestOptions: RequestInit = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow',
+      };
+
       console.log("Making API call to:", "http://51.21.132.192:5000/predict");
+      console.log("With file:", selectedFile.name);
       
-      const response = await fetch("http://51.21.132.192:5000/predict", {
-        method: "POST",
-        body: formData,
-        // Adding CORS mode and credentials
-        mode: "cors",
-        credentials: "omit",
-      });
-
+      const response = await fetch("http://51.21.132.192:5000/predict", requestOptions);
+      
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Server returned ${response.status}: ${errorText}`);
       }
 
-      const data = await response.json();
-      console.log("API response:", data);
+      const responseText = await response.text();
+      console.log("Raw API response:", responseText);
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("Error parsing JSON:", parseError);
+        throw new Error(`Invalid JSON response: ${responseText}`);
+      }
+      
+      console.log("Parsed API response:", data);
       setResult(data);
       
       toast({
@@ -72,7 +81,6 @@ const Index = () => {
     } catch (error) {
       console.error("Error analyzing image:", error);
       
-      // More detailed error information
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       setErrorDetails(errorMessage);
       
