@@ -3,8 +3,9 @@ import { useState } from "react";
 import { ImageUploader } from "@/components/ImageUploader";
 import { ResultDisplay } from "@/components/ResultDisplay";
 import { Button } from "@/components/ui/button";
-import { Brain, Loader } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { Brain, Loader, AlertCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 interface AnalysisResult {
   confidence: number;
@@ -16,11 +17,13 @@ const Index = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleImageSelect = (file: File) => {
     setSelectedFile(file);
     setResult(null);
+    setErrorDetails(null);
   };
 
   const analyzeImage = async () => {
@@ -35,21 +38,30 @@ const Index = () => {
 
     setIsAnalyzing(true);
     setResult(null);
+    setErrorDetails(null);
 
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
 
+      // Log that we're making the API call
+      console.log("Making API call to:", "http://51.21.132.192:5000/predict");
+      
       const response = await fetch("http://51.21.132.192:5000/predict", {
         method: "POST",
         body: formData,
+        // Adding CORS mode and credentials
+        mode: "cors",
+        credentials: "omit",
       });
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`Server returned ${response.status}: ${errorText}`);
       }
 
       const data = await response.json();
+      console.log("API response:", data);
       setResult(data);
       
       toast({
@@ -59,9 +71,14 @@ const Index = () => {
       });
     } catch (error) {
       console.error("Error analyzing image:", error);
+      
+      // More detailed error information
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      setErrorDetails(errorMessage);
+      
       toast({
         title: "Analysis Failed",
-        description: "There was an error analyzing the image. Please try again.",
+        description: "There was an error analyzing the image. See details below.",
         variant: "destructive",
       });
     } finally {
@@ -112,6 +129,25 @@ const Index = () => {
               )}
             </Button>
           </div>
+          
+          {errorDetails && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>API Error</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">Failed to analyze image due to:</p>
+                <pre className="bg-red-50 p-2 rounded text-xs overflow-auto">{errorDetails}</pre>
+                <p className="mt-2 text-sm">
+                  This could be due to:
+                  <ul className="list-disc pl-5 mt-1">
+                    <li>The API server being offline or unreachable</li>
+                    <li>CORS restrictions on the server</li>
+                    <li>Network connectivity issues</li>
+                  </ul>
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
 
         {result && (
@@ -143,4 +179,3 @@ const Index = () => {
 };
 
 export default Index;
-
