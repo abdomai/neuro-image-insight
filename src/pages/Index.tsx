@@ -70,25 +70,25 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="bg-blue-100 p-2 rounded-full">
-              <Brain className="h-6 w-6 text-blue-600" />
+    <div className="min-h-screen bg-brand-50 text-brand-900">
+      <header className="bg-white shadow-soft border-b border-brand-100">
+        <div className="max-w-5xl mx-auto px-4 py-6 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="bg-medical-100 p-3 rounded-large">
+              <Brain className="h-7 w-7 text-medical-600" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">NeuroImage Insight</h1>
+            <h1 className="text-3xl font-bold text-brand-800 tracking-tight">NeuroImage Insight</h1>
           </div>
-          <p className="text-sm text-gray-500">Brain Tumor Detection</p>
+          <p className="text-sm text-brand-500">Brain Tumor Detection AI</p>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Upload Brain Scan</h2>
-          <p className="text-gray-600 mb-6">
-            Upload a clear MRI or CT scan image of the brain for analysis. The AI model will 
-            analyze the image and detect the presence of a tumor.
+      <main className="max-w-5xl mx-auto px-4 py-8 space-y-8">
+        <div className="bg-white rounded-large shadow-medium p-8 border border-brand-100">
+          <h2 className="text-2xl font-semibold mb-4 text-brand-700">Brain Scan Analysis</h2>
+          <p className="text-brand-600 mb-6 leading-relaxed">
+            Upload a clear MRI or CT scan for advanced AI-powered tumor detection. 
+            Our machine learning model provides precise, data-driven insights to support medical professionals.
           </p>
           
           <ImageUploader 
@@ -100,7 +100,7 @@ const Index = () => {
             <Button 
               onClick={analyzeImage} 
               disabled={!selectedFile || isAnalyzing}
-              className="w-full"
+              className="w-full bg-medical-600 hover:bg-medical-700 text-white transition-colors duration-300"
             >
               {isAnalyzing ? (
                 <>
@@ -108,33 +108,33 @@ const Index = () => {
                   Analyzing Image...
                 </>
               ) : (
-                "Analyze Image"
+                "Analyze Brain Scan"
               )}
             </Button>
           </div>
         </div>
 
         {result && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Analysis Results</h2>
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold text-brand-700">Analysis Results</h2>
             <ResultDisplay result={result} />
           </div>
         )}
 
-        <div className="bg-blue-50 rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-2">Important Note</h2>
-          <p className="text-gray-600 text-sm">
-            This tool is for educational and demonstration purposes only. It should not be used 
-            for medical diagnosis. Always consult with qualified healthcare professionals for 
-            proper diagnosis and treatment.
+        <div className="bg-medical-50 rounded-large p-6 border border-medical-100">
+          <h2 className="text-xl font-semibold mb-3 text-medical-800">Medical Disclaimer</h2>
+          <p className="text-brand-600 text-sm leading-relaxed">
+            This AI-powered tool is for educational and screening purposes only. 
+            It should not replace professional medical diagnosis. 
+            Always consult healthcare professionals for comprehensive medical advice.
           </p>
         </div>
       </main>
 
-      <footer className="bg-white border-t mt-auto">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <p className="text-center text-sm text-gray-500">
-            NeuroImage Insight - AI-Powered Brain Tumor Detection Tool
+      <footer className="bg-white border-t border-brand-100 mt-auto">
+        <div className="max-w-5xl mx-auto px-4 py-6">
+          <p className="text-center text-sm text-brand-500">
+            © 2025 NeuroImage Insight - AI-Powered Medical Screening Technology
           </p>
         </div>
       </footer>
@@ -143,3 +143,4 @@ const Index = () => {
 };
 
 export default Index;
+
