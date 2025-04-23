@@ -49,10 +49,10 @@ const Index = () => {
         redirect: 'follow',
       };
 
-      console.log("Making API call to:", "http://51.21.132.192:5000/predict");
+      console.log("Making API call to:", "https://44.223.100.118/predict");
       console.log("With file:", selectedFile.name);
       
-      const response = await fetch("http://51.21.132.192:5000/predict", requestOptions);
+      const response = await fetch("https://44.223.100.118/predict", requestOptions);
       
       if (!response.ok) {
         const errorText = await response.text();
